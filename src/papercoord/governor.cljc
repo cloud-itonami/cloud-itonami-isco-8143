@@ -74,7 +74,7 @@
   to a human plant safety officer, either via a hard permanent block
   on the op-allowlist (rules 4/5 above) or via a mandatory escalation
   (rule 6 above)."
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [papercoord.store :as store]))
 
 (def confidence-floor 0.6)
@@ -121,7 +121,7 @@
    "override plant safety officer judgment"])
 
 (defn- contains-excluded-phrase? [s]
-  (let [s (str/lower-case (or s ""))]
+  (let [s (str/lower (or s ""))]
     (boolean (some #(str/includes? s %) scope-excluded-phrases))))
 
 (defn- hard-violations [proposal converter-record facility-record]
