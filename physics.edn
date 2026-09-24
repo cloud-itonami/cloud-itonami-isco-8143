@@ -1,0 +1,34 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:physics` runs it.
+;;
+;; README "Robotics premise": a plant scheduling/logistics coordination robot
+;; schedules a paper-products machine crew, logs runs/inventory and
+;; coordinates raw-paper/converting-materials supply; it never operates
+;; converting equipment. Its physical work is plant logistics: bringing parent
+;; reels from the reel store to the converting line, and palletising finished
+;; carton stacks.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isco-8143"
+ :cases
+ [{:id :parent-reel-to-unwind
+   :kind :transport
+   :procedure "reel AMR brings a parent paper reel from the reel store to the converting line's unwind stand"
+   :params {:mass-kg 500.0 :distance-m 100.0 :v-max-mps 1.0 :a-max-mps2 0.3
+            :brake-decel-mps2 0.8 :drive-force-n 1000.0 :crr 0.02
+            :cog-height-m 0.35 :payload-cog-height-m 0.80 :support-half-length-m 0.60
+            :max-time-s 1800.0}
+   :sweep {:param :payload-kg :values [300.0 600.0 1000.0 1500.0 2000.0]}
+   :quantity :cycle-time-s
+   :limit {:max 120.0 :basis "estimate: a reel must arrive within the 2-minute splice window of the unwind"}}
+  {:id :carton-stack-to-pallet
+   :kind :manipulator
+   :procedure "palletising arm lifts a stack of folded cartons from the delivery conveyor onto the pallet"
+   :params {:l1-m 0.90 :l2-m 0.80 :m1-kg 15.0 :m2-kg 10.0
+            :from [1.00 0.60] :to [0.80 -0.30] :duration-s 2.0 :steps 400}
+   :sweep {:param :payload-kg :values [5.0 10.0 15.0 25.0 40.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 500.0 :basis "estimate: continuous shoulder torque of a ~40 kg-payload palletising arm"}
+   :boundary {:lo 1.0 :hi 120.0}}]}
