@@ -1,5 +1,5 @@
 (ns papercoord.governor-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [papercoord.store :as store]
             [papercoord.advisor :as advisor]
             [papercoord.governor :as governor]))
